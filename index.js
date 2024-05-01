@@ -5,7 +5,9 @@ const PORT = 8000;
 const app = express();
 
 // Middlewares
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+    extended: false
+}));
 
 // Routes
 app.get('/users', (req, res) => {
@@ -66,21 +68,94 @@ app.get('/api/users', (req, res) => {
     return res.json(users);
 })
 
-app.get('/api/users/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const user = users.find((user) => user.id === id);
-    return res.json(user);
-})
+app.route('/api/users/:id')
+    .get('/api/users/:id', (req, res) => {
+        const id = Number(req.params.id);
+        const user = users.find((user) => user.id === id);
+        return res.json(user);
+    })
+    .patch('/api/users/:id', (req, res) => {
+        const id = Number(req.params.id);
+        const body = req.body;
+
+        // Find the index of the user with the given id
+        const index = users.findIndex((user) => user.id === id);
+
+        // If user with the given id is not found, return 404
+        if (index === -1) {
+            return res.status(404).json({
+                error: 'User not found.'
+            });
+        }
+
+        // Update the user object with the new data
+        const updatedUser = {
+            ...users[index],
+            ...body
+        };
+        users[index] = updatedUser;
+
+        // Write data to file
+        fs.writeFile('./MOCK_DATA.json', JSON.stringify(users), (err) => {
+            if (err) {
+                console.error('Error writing to file:', err);
+                return res.status(500).json({
+                    error: 'Internal server error.'
+                });
+            } else {
+                return res.status(200).json({
+                    status: 'success',
+                    user: updatedUser
+                });
+            }
+        });
+    })
+    .delete('/api/users/:id', (req, res) => {
+        const id = Number(req.params.id);
+
+        // Find the index of the user with the given id
+        const index = users.findIndex((user) => user.id === id);
+
+        // If user with the given id is not found, return 404
+        if (index === -1) {
+            return res.status(404).json({
+                error: 'User not found.'
+            });
+        }
+
+        // Remove the user object at the found index
+        users.splice(index, 1, );
+
+        // Write data to file
+        fs.writeFile('./MOCK_DATA.json', JSON.stringify(users), (err) => {
+            if (err) {
+                console.error('Error writing to file:', err);
+                return res.status(500).json({
+                    error: 'Internal server error.'
+                });
+            } else {
+                return res.status(200).json({
+                    status: 'success',
+                    message: 'user deleted'
+                });
+            }
+        });
+    });
 
 app.post('/api/users', (req, res) => {
     const body = req.body;
-    users.push({ id: users.length + 1, ...body });
+    users.push({
+        id: users.length + 1,
+        ...body
+    });
 
     // Write data to file
     fs.writeFile('./MOCK_DATA.json', JSON.stringify(users), (err) => {
         if (err) {
             console.error('Error writing to file:', err);
-            return res.status(500).json({ error: 'Internal server error.' });
+            return res.status(500).json({
+                error: 'Internal server error.'
+            });
         } else {
             return res.status(201).json({
                 status: 'sucess',
@@ -89,64 +164,6 @@ app.post('/api/users', (req, res) => {
         }
     });
 })
-
-app.patch('/api/users/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const body = req.body;
-
-    // Find the index of the user with the given id
-    const index = users.findIndex((user) => user.id === id);
-
-    // If user with the given id is not found, return 404
-    if (index === -1) {
-        return res.status(404).json({ error: 'User not found.' });
-    }
-
-    // Update the user object with the new data
-    const updatedUser = { ...users[index], ...body };
-    users[index] = updatedUser;
-
-    // Write data to file
-    fs.writeFile('./MOCK_DATA.json', JSON.stringify(users), (err) => {
-        if (err) {
-            console.error('Error writing to file:', err);
-            return res.status(500).json({ error: 'Internal server error.' });
-        } else {
-            return res.status(200).json({
-                status: 'success',
-                user: updatedUser
-            });
-        }
-    });
-});
-
-app.delete('/api/users/:id', (req, res) => {
-    const id = Number(req.params.id);
-
-    // Find the index of the user with the given id
-    const index = users.findIndex((user) => user.id === id);
-
-    // If user with the given id is not found, return 404
-    if (index === -1) {
-        return res.status(404).json({ error: 'User not found.' });
-    }
-
-    // Remove the user object at the found index
-    users.splice(index, 1,);
-
-    // Write data to file
-    fs.writeFile('./MOCK_DATA.json', JSON.stringify(users), (err) => {
-        if (err) {
-            console.error('Error writing to file:', err);
-            return res.status(500).json({ error: 'Internal server error.' });
-        } else {
-            return res.status(200).json({
-                status: 'success',
-                message: 'user deleted'
-            });
-        }
-    });
-});
 
 // Start server
 app.listen(PORT, () => {
