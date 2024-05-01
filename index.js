@@ -1,7 +1,11 @@
 const express = require('express');
+const fs = require('fs');
 const users = require('./MOCK_DATA.json');
 const PORT = 8000;
 const app = express();
+
+// Middlewares
+app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.get('/users', (req, res) => {
@@ -67,6 +71,26 @@ app.get('/api/users/:id', (req, res) => {
     const user = users.find((user) => user.id === id);
     return res.json(user);
 })
+
+app.post('/api/users', (req, res) => {
+    const body = req.body;
+    users.push({ id: users.length + 1, ...body });
+
+    // Write data to file
+    fs.writeFile('./MOCK_DATA.json', JSON.stringify(users), (err) => {
+        if (err) {
+            console.error('Error writing to file:', err);
+            return res.status(500).json({ error: 'Internal server error.' });
+        } else {
+            return res.status(201).json({
+                status: 'sucess',
+                id: users.length
+            })
+        }
+    });
+})
+
+// Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
