@@ -120,6 +120,33 @@ app.patch('/api/users/:id', (req, res) => {
     });
 });
 
+app.delete('/api/users/:id', (req, res) => {
+    const id = Number(req.params.id);
+
+    // Find the index of the user with the given id
+    const index = users.findIndex((user) => user.id === id);
+
+    // If user with the given id is not found, return 404
+    if (index === -1) {
+        return res.status(404).json({ error: 'User not found.' });
+    }
+
+    // Remove the user object at the found index
+    users.splice(index, 1,);
+
+    // Write data to file
+    fs.writeFile('./MOCK_DATA.json', JSON.stringify(users), (err) => {
+        if (err) {
+            console.error('Error writing to file:', err);
+            return res.status(500).json({ error: 'Internal server error.' });
+        } else {
+            return res.status(200).json({
+                status: 'success',
+                message: 'user deleted'
+            });
+        }
+    });
+});
 
 // Start server
 app.listen(PORT, () => {
