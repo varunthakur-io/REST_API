@@ -1,65 +1,67 @@
-const User = require("../models/user");
+// controllers/usersController.js
+const User = require('../models/user');
 
-async function handleGetAllUsers(req, res) {
-    try {
-        const allUsers = await User.find({});
-        return res.json(allUsers);
-    } catch (error) {
-        console.error("Error fetching users:", error);
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
-
-async function handleGetUserById(req, res) {
-    try {
-        const user = await User.findById(req.params.id);
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+// Controller methods for user-related actions
+const usersController = {
+    // Get all users
+    getAllUsers: async (req, res) => {
+        try {
+            const users = await User.find();
+            res.json(users);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
         }
-        return res.json(user);
-    } catch (error) {
-        console.error("Error fetching user:", error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+    },
+
+    // Create a new user
+    createUser: async (req, res) => {
+        try {
+            const newUser = new User(req.body);
+            await newUser.save();
+            res.status(201).json(newUser);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    },
+
+    // Get a user by ID
+    getUserById: async (req, res) => {
+        try {
+            const user = await User.findById(req.params.id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            res.json(user);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
+
+    // Update a user by ID
+    updateUser: async (req, res) => {
+        try {
+            const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            if (!updatedUser) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            res.json(updatedUser);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    },
+
+    // Delete a user by ID
+    deleteUser: async (req, res) => {
+        try {
+            const deletedUser = await User.findByIdAndDelete(req.params.id);
+            if (!deletedUser) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            res.json({ message: 'User deleted' });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
     }
 };
 
-async function handleCreateNewUser(req, res) {
-    let body = req.body;
-    try {
-        await User.create({ ...body });
-        return res.status(201).json({ msg: "success" });
-    } catch (error) {
-        console.error("Error creating user:", error);
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
-
-async function handleUpdateUserById(req, res) {
-    let updatedUserData = req.body;
-    try {
-        await User.findByIdAndUpdate(req.params.id, { ...updatedUserData });
-        return res.json({ status: 'User Updated' });
-    } catch (error) {
-        console.error("Error updating user:", error);
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
-
-
-async function handleDeleteUserById(req, res) {
-    try {
-        await User.findByIdAndDelete(req.params.id);
-        return res.json({ status: 'User Deleted' });
-    } catch (error) {
-        console.error("Error deleting user:", error);
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
-
-module.exports = {
-    handleGetAllUsers,
-    handleGetUserById,
-    handleUpdateUserById,
-    handleDeleteUserById,
-    handleCreateNewUser
-};
+module.exports = usersController;
