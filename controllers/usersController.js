@@ -56,11 +56,10 @@ async function handleDeleteUserById(req, res) {
     }
 };
 
-
 module.exports = {
     handleGetAllUsers,
     handleGetUserById,
     handleUpdateUserById,
     handleDeleteUserById,
     handleCreateNewUser
-}
+};

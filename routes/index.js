@@ -1,17 +1,12 @@
-// routes/index.js
 const express = require('express');
 const router = express.Router();
 
-// Import route files for different resources
-
+// Import route files
 const apiRoutes = require('./api/users');
 const usersRoutes = require('./users');
 
-// Import other route files as needed
-
-// Define base paths for different sections of your application
-router.use('/api', apiRoutes);
-router.use('/users', usersRoutes);
-// Define base paths for other sections as needed
+// Define base paths
+router.use('/api', apiRoutes); // Routes for APIs
+router.use('/users', usersRoutes); // Routes for users
 
 module.exports = router;

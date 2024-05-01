@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 const users = require('../MOCK_DATA.json');
 
-const {
-    handleGetAllUsers
-} = require("../controllers/usersController");
 
 router.get('/', (req, res) => {
     let html = `
