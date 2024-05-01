@@ -69,12 +69,12 @@ app.get('/api/users', (req, res) => {
 })
 
 app.route('/api/users/:id')
-    .get('/api/users/:id', (req, res) => {
+    .get((req, res) => {
         const id = Number(req.params.id);
         const user = users.find((user) => user.id === id);
         return res.json(user);
     })
-    .patch('/api/users/:id', (req, res) => {
+    .patch((req, res) => {
         const id = Number(req.params.id);
         const body = req.body;
 
@@ -110,7 +110,7 @@ app.route('/api/users/:id')
             }
         });
     })
-    .delete('/api/users/:id', (req, res) => {
+    .delete((req, res) => {
         const id = Number(req.params.id);
 
         // Find the index of the user with the given id
@@ -124,7 +124,7 @@ app.route('/api/users/:id')
         }
 
         // Remove the user object at the found index
-        users.splice(index, 1, );
+        users.splice(index, 1,);
 
         // Write data to file
         fs.writeFile('./MOCK_DATA.json', JSON.stringify(users), (err) => {
