@@ -14,10 +14,16 @@ router.get('/', async (req, res) => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>User List</title>
             <style>
-                table {
+                body {
+                    background-color: #121212;
+                    color: #ffffff;
                     font-family: Arial, sans-serif;
+                }
+                table {
                     border-collapse: collapse;
                     width: 100%;
+                    background-color: #212121;
+                    color: #ffffff;
                 }
                 th, td {
                     border: 1px solid #dddddd;
@@ -25,7 +31,8 @@ router.get('/', async (req, res) => {
                     padding: 8px;
                 }
                 th {
-                    background-color: #f2f2f2;
+                    background-color: #424242;
+                    color: #ffffff;
                 }
             </style>
         </head>
