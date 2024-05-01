@@ -9,4 +9,9 @@ const usersRoutes = require('./users');
 router.use('/api', apiRoutes); // Routes for APIs
 router.use('/users', usersRoutes); // Routes for users
 
+// Define route handler for the root path ("/")
+router.get('/', (req, res) => {
+    res.redirect('/users'); // Redirect to "/users"
+});
+
 module.exports = router;
