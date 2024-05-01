@@ -16,6 +16,10 @@ app.use(express.urlencoded({
 const routes = require('./routes');
 app.use('/', routes);
 
+app.set('view engine', 'ejs'); // Set EJS as the template engine
+app.set('views', __dirname + '/views'); // Set the views directory
+
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
