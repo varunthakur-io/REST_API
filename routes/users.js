@@ -1,14 +1,14 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../models/user');
+import { Router } from 'express';
+const router = Router();
+import { find } from '../models/user';
 
 router.get('/', async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await find();
         res.render('userList', { users });
     } catch (error) {
         res.status(500).send('Internal server error');
     }
 });
 
-module.exports = router;
+export default router;

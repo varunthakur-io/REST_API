@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 
 // Import route files
-const apiRoutes = require('./api/users');
-const usersRoutes = require('./users');
+import apiRoutes from './api/users';
+import usersRoutes from './users';
 
 // Define base paths
 router.use('/api', apiRoutes); // Routes for APIs
@@ -14,4 +14,4 @@ router.get('/', (req, res) => {
     res.redirect('/users'); // Redirect to "/users"
 });
 
-module.exports = router;
+export default router;

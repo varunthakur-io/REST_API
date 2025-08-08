@@ -1,5 +1,5 @@
-const express = require('express');
-const { connectDB } = require("./conn");
+import express, { urlencoded } from 'express';
+import { connectDB } from "./conn";
 const PORT = 8000;
 const app = express();
 
@@ -8,12 +8,12 @@ connectDB("mongodb://127.0.0.1:27017/REST-API")
     .then(() => console.log("Database Connected !"));
 
 // Middlewares
-app.use(express.urlencoded({
+app.use(urlencoded({
     extended: false
 }));
 
 // Routes
-const routes = require('./routes');
+import routes from './routes';
 app.use('/', routes);
 
 app.set('view engine', 'ejs'); // Set EJS as the template engine
